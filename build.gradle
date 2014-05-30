@@ -9,9 +9,6 @@ ext {
     schemaTargetDir = new File("${project.projectDir}/src/main/generated".toString())
 }
 
-configurations {
-    xjc
-}
 
 dependencies {
     repositories {
@@ -60,6 +57,16 @@ afterEvaluate {
     idea {
         module {
             sourceDirs = sourceDirs + sourceSets.generated.allSource.srcDirs.flatten() as LinkedHashSet
+        }
+    }
+}
+
+idea.project {
+    ipr {
+        withXml { XmlProvider xml ->
+            xml.node.with {
+                component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'git'
+            }
         }
     }
 }
