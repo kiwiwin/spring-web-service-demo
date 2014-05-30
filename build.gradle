@@ -1,0 +1,65 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'jetty'
+
+ext {
+    springWebServiceVersion = "2.1.4.RELEASE"
+    sunJaxbVersion = "2.2.7"
+
+    schemaTargetDir = new File("${project.projectDir}/src/main/generated".toString())
+}
+
+configurations {
+    xjc
+}
+
+dependencies {
+    repositories {
+        mavenCentral()
+    }
+
+    compile(
+            "org.springframework.ws:spring-ws-core:$springWebServiceVersion",
+            "com.sun.xml.bind:jaxb-core:$sunJaxbVersion",
+            "com.sun.xml.bind:jaxb-xjc:$sunJaxbVersion",
+            "com.sun.xml.bind:jaxb-impl:$sunJaxbVersion"
+    )
+}
+
+
+clean << {
+    ant.delete(includeEmptyDirs: 'true') {
+        fileset(dir: file('src/main/generated'), includes: '**/*')
+    }
+}
+
+task generateSource << {
+    ant {
+        taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.compile.asPath)
+
+        xjc(destdir: schemaTargetDir, package: 'org.kiwi.spring.webservice.request', extension: true) {
+            schema(dir: 'schema', includes: "Hello*.xsd")
+        }
+    }
+}
+
+sourceSets {
+    generated {
+        java {
+            srcDirs = [schemaTargetDir]
+        }
+    }
+}
+
+compileJava {
+    dependsOn generateSource
+    source schemaTargetDir
+}
+
+afterEvaluate {
+    idea {
+        module {
+            sourceDirs = sourceDirs + sourceSets.generated.allSource.srcDirs.flatten() as LinkedHashSet
+        }
+    }
+}
