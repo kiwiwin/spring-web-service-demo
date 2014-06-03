@@ -15,4 +15,14 @@
                       targetNamespace="http://kiwi.org/schema/HelloRequest">
         <sws:xsd location="/WEB-INF/HelloService.xsd"/>
     </sws:dynamic-wsdl>
+
+
+    <sws:interceptors>
+        <bean id="validatingInterceptor"
+              class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor">
+            <property name="schema" value="/WEB-INF/HelloService.xsd"/>
+            <property name="validateRequest" value="true"/>
+            <property name="validateResponse" value="false"/>
+        </bean>
+    </sws:interceptors>
 </beans>

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://kiwi.org/schema/HelloRequest"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:kiwi="http://kiwi.org/schema/HelloRequest" targetNamespace="http://kiwi.org/schema/HelloRequest"
            elementFormDefault="qualified">
+    <xs:simpleType name="userID">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="5"/>
+            <xs:maxLength value="5"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:element name="HelloRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Message" type="xs:string"/>
-                <xs:element name="From" type="xs:string"/>
-                <xs:element name="To" type="xs:string"/>
+                <xs:element name="From" type="kiwi:userID"/>
+                <xs:element name="To" type="kiwi:userID"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -15,8 +22,8 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Message" type="xs:string"/>
-                <xs:element name="From" type="xs:string"/>
-                <xs:element name="To" type="xs:string"/>
+                <xs:element name="From" type="kiwi:userID"/>
+                <xs:element name="To" type="kiwi:userID"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
